@@ -36,12 +36,11 @@ router.get('/:id', async (req, res) => {
   res.json(categoryData)
 });
 
-router.post('/', (req, res) => {
-  const categoryData = Category.create({
-    id: req.body.id,
+router.post('/', async (req, res) => {
+  const categoryData = await Category.create({
     category_name: req.body.category_name
   })
-  res.json(categoryData)
+  res.json({"Message":`${categoryData.category_name} has been addded`})
 });
 
 router.put('/:id', async (req, res) => {
@@ -58,7 +57,7 @@ router.put('/:id', async (req, res) => {
     res.status(404).json({ message: 'Category Not Found' });
     return;
   }
-  res.json(categoryData);
+  res.json({"Message":`${req.body.category_name} has been updated`})
 
 });
 
@@ -73,7 +72,7 @@ router.delete('/:id', async (req, res) => {
     res.status(404).json({ message: 'Category Not Found' });
     return;
   }
-  res.json(categoryData);
+  res.json("Category has been deleted");
 
 });
 
