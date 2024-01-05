@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
   const categoryData = await Category.create({
     category_name: req.body.category_name
   })
-  res.json({"Message":`${categoryData.category_name} has been addded`})
+  res.status(200).json({ message: `${categoryData.category_name} has been addded`});
 });
 
 router.put('/:id', async (req, res) => {
@@ -57,8 +57,7 @@ router.put('/:id', async (req, res) => {
     res.status(404).json({ message: 'Category Not Found' });
     return;
   }
-  res.json({"Message":`${req.body.category_name} has been updated`})
-
+  res.status(200).json({ message: `${req.body.category_name} has been updated` });
 });
 
 router.delete('/:id', async (req, res) => {
@@ -72,7 +71,7 @@ router.delete('/:id', async (req, res) => {
     res.status(404).json({ message: 'Category Not Found' });
     return;
   }
-  res.json("Category has been deleted");
+  res.status(200).json({ message: 'Category has been deleted' });
 
 });
 

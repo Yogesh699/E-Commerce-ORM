@@ -1,28 +1,81 @@
 const router = require('express').Router();
 const { Tag, Product, ProductTag } = require('../../models');
 
-// The `/api/tags` endpoint
 
-router.get('/', (req, res) => {
-  // find all tags
-  // be sure to include its associated Product data
+router.get('/', async (req, res) => {
+  const tagsData = await Tag.findAll({
+    attributes: [
+      'id',
+      'tag_name'
+    ],
+    include: [
+      {
+        model: Product,
+        attributes: ['id', 'product_name', 'price', 'stock', 'category_id'],
+      }
+    ]
+  })
+  res.json(tagsData)
 });
 
-router.get('/:id', (req, res) => {
-  // find a single tag by its `id`
-  // be sure to include its associated Product data
+router.get('/:id', async (req, res) => {
+  const tagData = await Tag.findOne({
+    where: {
+      id: req.params.id
+    },
+    attributes: [
+      'id',
+      'tag_name'
+    ],
+    include: [
+      {
+        model: Product,
+        attributes: ['id', 'product_name', 'price', 'stock', 'category_id'],
+      }
+    ]
+  })
+  if(!tagData){
+    res.status(404).json({ message: 'Tag Not Found' });
+    return
+  }
+  res.json(tagData)
 });
 
-router.post('/', (req, res) => {
-  // create a new tag
+router.post('/', async (req, res) => {
+  await Tag.create({
+    tag_name: req.body.tag_name
+  })
+  res.status(200).json({ message: 'Tag has been added' });
 });
 
-router.put('/:id', (req, res) => {
-  // update a tag's name by its `id` value
+router.put('/:id', async (req, res) => {
+  const tagData = await Tag.update({
+    tag_name: req.body.tag_name
+  },
+    {
+      where: {
+        id: req.params.id
+      }
+    }
+  )
+  if (!tagData) {
+    res.status(404).json({ message: 'Tag Not Found' });
+    return;
+  }
+  res.status(200).json({ message: 'Tag has been updated' });
 });
 
-router.delete('/:id', (req, res) => {
-  // delete on tag by its `id` value
+router.delete('/:id', async (req, res) => {
+   const tagData = await Tag.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+  if (!tagData) {
+    res.status(404).json({ message: 'Tag Not Found' });
+    return;
+  }
+  res.status(200).json({ message: 'Tag has been deleted' });
 });
 
 module.exports = router;
